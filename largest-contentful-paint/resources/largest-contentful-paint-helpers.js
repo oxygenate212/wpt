@@ -26,13 +26,15 @@ function checkImage(entry, expectedUrl, expectedID, expectedSize, timeLowerBound
     assert_equals(entry.renderTime, 0, 'renderTime should be 0');
     assert_between_exclusive(entry.loadTime, timeLowerBound, performance.now(),
       'loadTime should be between the lower bound and the current time');
-    assert_equals(entry.startTime, entry.loadTime, 'startTime should equal loadTime');
+    // The startTime has higher precision than the loadTime due to difference in implementation. They differ at most 1 millisecond.
+    assert_approx_equals(entry.startTime, entry.loadTime, 0.001, 'startTime should be equal to renderTime to the precision of 1 millisecond.');
   } else {
     assert_between_exclusive(entry.loadTime, timeLowerBound, entry.renderTime,
       'loadTime should occur between the lower bound and the renderTime');
     assert_greater_than_equal(performance.now(), entry.renderTime,
       'renderTime should occur before the entry is dispatched to the observer.');
-    assert_equals(entry.startTime, entry.renderTime, 'startTime should equal renderTime');
+    // The startTime has higher precision than the renderTime due to difference in implementation. They differ at most 1 millisecond.
+    assert_approx_equals(entry.startTime, entry.renderTime, 0.001, 'startTime should be equal to renderTime to the precision of 1 millisecond.');
   }
   if (options.includes('sizeLowerBound')) {
     assert_greater_than(entry.size, expectedSize);
@@ -62,7 +64,7 @@ const load_and_observe = url => {
           resolve(entryList.getEntries()[0]);
         }
       }
-    })).observe({type: 'largest-contentful-paint', buffered: true});
+    })).observe({ type: 'largest-contentful-paint', buffered: true });
     const img = new Image();
     img.id = 'image_id';
     img.src = url;
@@ -78,7 +80,7 @@ const load_video_and_observe = url => {
           resolve(entryList.getEntries()[0]);
         }
       }
-    })).observe({type: 'largest-contentful-paint', buffered: true});
+    })).observe({ type: 'largest-contentful-paint', buffered: true });
     const video = document.createElement("video");
     video.id = 'video_id';
     video.src = url;
