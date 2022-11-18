@@ -44,7 +44,8 @@
   }
   async_test(t => {
     for(let popover of popovers) {
-      popover.addEventListener('popoverhide',e => {
+      popover.addEventListener('toggle',e => {
+        if (e.state !== "closing") return;
         assert_unreached('Scrolling should not light-dismiss a popover');
       });
     }
