@@ -53,8 +53,8 @@ promise_test(async t => {
       /*children=*/[{
         'blocked': true,
         'url': '',
-        'src': '',
-        'id': '',
+        'src': rc1_child_url,
+        'id': 'test-id',
         'name': '',
         'reasons': [],
         'children': []
